@@ -16,22 +16,20 @@ class ViewController: UIViewController {
     var questionsAsked = 0
     var correctQuestions = 0
     var indexOfSelectedQuestion: Int = 0
+    let questionProvider = QuestionProvider()
+  
     
     var gameSound: SystemSoundID = 0
     
-    let trivia: [[String : String]] = [
-        ["Question": "Only female koalas can whistle", "Answer": "False"],
-        ["Question": "Blue whales are technically whales", "Answer": "True"],
-        ["Question": "Camels are cannibalistic", "Answer": "False"],
-        ["Question": "All ducks are birds", "Answer": "True"]
-    ]
+    @IBOutlet weak var QuestionDisplay: UILabel!
+    @IBOutlet weak var FirstAnswer: UIButton!
+    @IBOutlet weak var SecondAnswer: UIButton!
+    @IBOutlet weak var ThirdAnswer: UIButton!
+    @IBOutlet weak var FourthAnswer: UIButton!
+    @IBOutlet weak var PlayAgain: UIButton!
+    @IBOutlet weak var NextQuestion: UIButton!
+    @IBOutlet weak var CorrectIncorrect: UILabel!
     
-    @IBOutlet weak var questionField: UILabel!
-    @IBOutlet weak var trueButton: UIButton!
-    @IBOutlet weak var falseButton: UIButton!
-    @IBOutlet weak var playAgainButton: UIButton!
-    
-
     override func viewDidLoad() {
         super.viewDidLoad()
         loadGameStartSound()
@@ -46,37 +44,31 @@ class ViewController: UIViewController {
     }
     
     func displayQuestion() {
-        indexOfSelectedQuestion = GKRandomSource.sharedRandom().nextInt(upperBound: trivia.count)
-        let questionDictionary = trivia[indexOfSelectedQuestion]
-        questionField.text = questionDictionary["Question"]
-        playAgainButton.isHidden = true
+        indexOfSelectedQuestion = questionProvider.randomIndexOfSelectedQuestion()
+        let question = questionProvider.randomQuestion(indexOfSelectedQuestion: indexOfSelectedQuestion)
+        QuestionDisplay.text = question
+        PlayAgain.isHidden = true
+        PlayAgain.isEnabled = false
+        NextQuestion.isHidden = true
+        NextQuestion.isEnabled = false
+        CorrectIncorrect.isHidden = true
     }
     
     func displayScore() {
         // Hide the answer buttons
-        trueButton.isHidden = true
-        falseButton.isHidden = true
+        FirstAnswer.isHidden = true
+        SecondAnswer.isHidden = true
+        ThirdAnswer.isHidden = true
+        FourthAnswer.isHidden = true
         
         // Display play again button
-        playAgainButton.isHidden = false
+        PlayAgain.isHidden = false
         
-        questionField.text = "Way to go!\nYou got \(correctQuestions) out of \(questionsPerRound) correct!"
         
     }
     
     @IBAction func checkAnswer(_ sender: UIButton) {
         // Increment the questions asked counter
-        questionsAsked += 1
-        
-        let selectedQuestionDict = trivia[indexOfSelectedQuestion]
-        let correctAnswer = selectedQuestionDict["Answer"]
-        
-        if (sender === trueButton &&  correctAnswer == "True") || (sender === falseButton && correctAnswer == "False") {
-            correctQuestions += 1
-            questionField.text = "Correct!"
-        } else {
-            questionField.text = "Sorry, wrong answer!"
-        }
         
         loadNextRoundWithDelay(seconds: 2)
     }
@@ -93,8 +85,10 @@ class ViewController: UIViewController {
     
     @IBAction func playAgain() {
         // Show the answer buttons
-        trueButton.isHidden = false
-        falseButton.isHidden = false
+        FirstAnswer.isHidden = false
+        SecondAnswer.isHidden = false
+        ThirdAnswer.isHidden = false
+        FourthAnswer.isHidden = false
         
         questionsAsked = 0
         correctQuestions = 0
