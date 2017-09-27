@@ -59,5 +59,3 @@ struct QuestionProvider {
 var triviaSuper: [Questions] = []
 
 
-
-

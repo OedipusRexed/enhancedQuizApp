@@ -16,9 +16,9 @@ class ViewController: UIViewController {
     var questionsAsked = 0
     var correctQuestions = 0
     var indexOfSelectedQuestion: Int = 0
-    let questionProvider = QuestionProvider()
+    var questionProvider = QuestionProvider()
   
-    
+    var triviaSuper: [Questions] = []
     var gameSound: SystemSoundID = 0
     
  
@@ -103,7 +103,7 @@ class ViewController: UIViewController {
             // need sound to play
         }
         disableButtons()
-        triviaSuper.remove(at: indexOfSelectedQuestion)
+        questionProvider.trivia.remove(at: indexOfSelectedQuestion)
         CorrectIncorrect.isHidden = false
     
     }
