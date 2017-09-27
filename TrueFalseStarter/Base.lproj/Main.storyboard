@@ -32,7 +32,7 @@
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="First"/>
                                 <connections>
-                                    <action selector="FirstAnswer" destination="BYZ-38-t0r" eventType="touchUpInside" id="Wy1-WQ-sRr"/>
+                                    <action selector="checkAnswer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="y2R-8x-i0K"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AS4-HX-g9f">
@@ -48,7 +48,6 @@
                                 </state>
                                 <connections>
                                     <action selector="SecondAnswer" destination="BYZ-38-t0r" eventType="touchUpInside" id="jrn-8W-5RO"/>
-                                    <action selector="SecondAnswer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9bA-bN-OLV"/>
                                     <action selector="checkAnswer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="46g-ss-Z6H"/>
                                 </connections>
                             </button>
@@ -62,6 +61,9 @@
                                 <state key="normal" title="Third">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="checkAnswer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iot-u6-iWs"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0ut-OI-6gC">
                                 <rect key="frame" x="36" y="440" width="303" height="50"/>
@@ -72,6 +74,9 @@
                                 <state key="normal" title="Fourth">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="checkAnswer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="usC-nx-wEa"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sample Question" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I3V-ih-1Ky">
                                 <rect key="frame" x="36" y="40" width="303" height="50"/>
@@ -99,6 +104,9 @@
                                 <state key="normal" title="Next Question">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="NextQuestion:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dfi-ig-jJc"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Correct/Incorrect" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g8L-Nl-MIy">
                                 <rect key="frame" x="75" y="117" width="241" height="21"/>

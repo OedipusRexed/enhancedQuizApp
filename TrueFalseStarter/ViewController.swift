@@ -31,18 +31,15 @@ class ViewController: UIViewController {
     @IBOutlet weak var CorrectIncorrect: UILabel!
     @IBOutlet weak var PlayAgain: UIButton!
     
-    var answeredQuestionIndexesArray: [Int] = Array()
     
+    var answeredQuestionIndexesArray: [Int] = Array()
     var correctAnswer = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadGameStartSound()
         // Start game
-        playGameStartSound()
         displayQuestion()
         displayAnswer()
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -51,32 +48,38 @@ class ViewController: UIViewController {
     }
     
     func displayQuestion() {
+        
         indexOfSelectedQuestion = questionProvider.randomIndexOfSelectedQuestion()
         let question = questionProvider.randomQuestion(indexOfSelectedQuestion: indexOfSelectedQuestion)
+        answeredQuestionIndexesArray.append(indexOfSelectedQuestion)
         QuestionDisplay.text = question
         PlayAgain.isHidden = true
         PlayAgain.isEnabled = false
         NextQuestion.isHidden = true
         NextQuestion.isEnabled = false
         CorrectIncorrect.isHidden = true
+        
+       
+        
     }
     
     func displayAnswer() {
         
         let answerArrays = questionProvider.randomAnswer(indexOfSelectedQuestion: indexOfSelectedQuestion)
         
-        if answerArrays.count == 4 {
-        FirstAnswer.setTitle(answerArrays[0], for: .normal);
-        SecondAnswer.setTitle(answerArrays[1], for: .normal);
-        ThirdAnswer.setTitle(answerArrays[2], for: .normal);
-        FourthAnswer.setTitle(answerArrays[3], for: .normal)
-    }
-            // for 3 answer questions
-        else {
+        if answerArrays.count == 3 {
             FirstAnswer.setTitle(answerArrays[0], for: .normal);
             SecondAnswer.setTitle(answerArrays[1], for: .normal);
             ThirdAnswer.setTitle(answerArrays[2], for: .normal);
-            FourthAnswer.isHidden = true
+            FourthAnswer.isHidden = true  }
+            
+            // for 3 answer questions
+            else {
+                FourthAnswer.isHidden = false
+                FirstAnswer.setTitle(answerArrays[0], for: .normal);
+                SecondAnswer.setTitle(answerArrays[1], for: .normal);
+                ThirdAnswer.setTitle(answerArrays[2], for: .normal);
+                FourthAnswer.setTitle(answerArrays[3], for: .normal)
         }
     }
     
@@ -100,10 +103,18 @@ class ViewController: UIViewController {
             // need sound to play
         }
         disableButtons()
-
+        triviaSuper.remove(at: indexOfSelectedQuestion)
         CorrectIncorrect.isHidden = false
     
     }
+    
+    @IBAction func NextQuestion(_ sender: UIButton) {
+        enableButtons()
+        displayQuestion()
+        displayAnswer()
+        
+    }
+    
     
     func disableButtons() {
         
@@ -134,16 +145,6 @@ class ViewController: UIViewController {
         
     }
     
-    func nextRound() {
-        if questionsAsked == questionsPerRound {
-            // Game is over
-            displayScore()
-        } else {
-            // Continue game
-            displayQuestion()
-        }
-    }
-    
     @IBAction func playAgain() {
         // Show the answer buttons
         FirstAnswer.isHidden = false
@@ -153,33 +154,29 @@ class ViewController: UIViewController {
         
         questionsAsked = 0
         correctQuestions = 0
-        nextRound()
+ 
     }
     
-
-    
-    // MARK: Helper Methods
-    
-    func loadNextRoundWithDelay(seconds: Int) {
-        // Converts a delay in seconds to nanoseconds as signed 64 bit integer
-        let delay = Int64(NSEC_PER_SEC * UInt64(seconds))
-        // Calculates a time value to execute the method given current time and delay
-        let dispatchTime = DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)
+    func enableButtons() {
+        // The style constraints are setted for enabled buttons
+        let backgroundColorEnabledButton = UIColor(red:0.09, green:0.47, blue:0.58, alpha:1.0)
+        let textColorEnabledButton = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.0)
         
-        // Executes the nextRound method at the dispatch time on the main queue
-        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
-            self.nextRound()
-        }
-    }
-    
-    func loadGameStartSound() {
-        let pathToSoundFile = Bundle.main.path(forResource: "GameSound", ofType: "wav")
-        let soundURL = URL(fileURLWithPath: pathToSoundFile!)
-        AudioServicesCreateSystemSoundID(soundURL as CFURL, &gameSound)
-    }
-    
-    func playGameStartSound() {
-        AudioServicesPlaySystemSound(gameSound)
-    }
-}
-
+        FirstAnswer.backgroundColor = backgroundColorEnabledButton
+        FirstAnswer.setTitleColor(textColorEnabledButton, for: .normal)
+        
+        SecondAnswer.backgroundColor = backgroundColorEnabledButton
+        SecondAnswer.setTitleColor(textColorEnabledButton, for: .normal)
+        
+        ThirdAnswer.backgroundColor = backgroundColorEnabledButton
+        ThirdAnswer.setTitleColor(textColorEnabledButton, for: .normal)
+        
+        FourthAnswer.backgroundColor = backgroundColorEnabledButton
+        FourthAnswer.setTitleColor(textColorEnabledButton, for: .normal)
+        
+        // The buttons are enabled.
+        FirstAnswer.isEnabled = true
+        SecondAnswer.isEnabled = true
+        ThirdAnswer.isEnabled = true
+        FourthAnswer.isEnabled = true
+    }}
