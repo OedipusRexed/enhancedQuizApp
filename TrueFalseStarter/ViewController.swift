@@ -21,14 +21,19 @@ class ViewController: UIViewController {
     
     var gameSound: SystemSoundID = 0
     
+ 
     @IBOutlet weak var QuestionDisplay: UILabel!
     @IBOutlet weak var FirstAnswer: UIButton!
     @IBOutlet weak var SecondAnswer: UIButton!
     @IBOutlet weak var ThirdAnswer: UIButton!
     @IBOutlet weak var FourthAnswer: UIButton!
-    @IBOutlet weak var PlayAgain: UIButton!
     @IBOutlet weak var NextQuestion: UIButton!
     @IBOutlet weak var CorrectIncorrect: UILabel!
+    @IBOutlet weak var PlayAgain: UIButton!
+    
+    var answeredQuestionIndexesArray: [Int] = Array()
+    
+    var correctAnswer = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +41,8 @@ class ViewController: UIViewController {
         // Start game
         playGameStartSound()
         displayQuestion()
+        displayAnswer()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -54,6 +61,65 @@ class ViewController: UIViewController {
         CorrectIncorrect.isHidden = true
     }
     
+    func displayAnswer() {
+        
+        let answerArrays = questionProvider.randomAnswer(indexOfSelectedQuestion: indexOfSelectedQuestion)
+        
+        if answerArrays.count == 4 {
+        FirstAnswer.setTitle(answerArrays[0], for: .normal);
+        SecondAnswer.setTitle(answerArrays[1], for: .normal);
+        ThirdAnswer.setTitle(answerArrays[2], for: .normal);
+        FourthAnswer.setTitle(answerArrays[3], for: .normal)
+    }
+            // for 3 answer questions
+        else {
+            FirstAnswer.setTitle(answerArrays[0], for: .normal);
+            SecondAnswer.setTitle(answerArrays[1], for: .normal);
+            ThirdAnswer.setTitle(answerArrays[2], for: .normal);
+            FourthAnswer.isHidden = true
+        }
+    }
+    
+    @IBAction func checkAnswer(_ sender: UIButton) {
+     correctAnswer = questionProvider.getCorrectAnswerByQuestion(in: indexOfSelectedQuestion)
+     
+        if (sender === FirstAnswer && FirstAnswer.titleLabel?.text == correctAnswer) ||
+        (sender === SecondAnswer && SecondAnswer.titleLabel?.text == correctAnswer) ||
+        (sender === ThirdAnswer && ThirdAnswer.titleLabel?.text == correctAnswer) ||
+        (sender === FourthAnswer && FourthAnswer.titleLabel?.text == correctAnswer)
+        {
+            let color = UIColor.green
+            CorrectIncorrect.textColor = color
+            CorrectIncorrect.text = "That's Correct!"
+            // need sound to play
+        }
+        else {
+            let color = UIColor.red
+            CorrectIncorrect.textColor = color
+            CorrectIncorrect.text = "Sorry, That's Incorrect!"
+            // need sound to play
+        }
+        disableButtons()
+
+        CorrectIncorrect.isHidden = false
+    
+    }
+    
+    func disableButtons() {
+        
+        FirstAnswer.isEnabled = false
+        SecondAnswer.isEnabled = false
+        ThirdAnswer.isEnabled = false
+        FourthAnswer.isEnabled = false
+        FirstAnswer.isHighlighted = false
+        SecondAnswer.isHighlighted = false
+        ThirdAnswer.isHighlighted = false
+        FourthAnswer.isHighlighted = false
+        
+        NextQuestion.isHidden = false
+        NextQuestion.isEnabled = true
+    }
+    
     func displayScore() {
         // Hide the answer buttons
         FirstAnswer.isHidden = true
@@ -65,12 +131,7 @@ class ViewController: UIViewController {
         PlayAgain.isHidden = false
         
         
-    }
-    
-    @IBAction func checkAnswer(_ sender: UIButton) {
-        // Increment the questions asked counter
         
-        loadNextRoundWithDelay(seconds: 2)
     }
     
     func nextRound() {
