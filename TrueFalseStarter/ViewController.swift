@@ -18,7 +18,6 @@ class ViewController: UIViewController {
     var indexOfSelectedQuestion: Int = 0
     var questionProvider = QuestionProvider()
   
-    var triviaSuper: [Questions] = []
     var gameSound: SystemSoundID = 0
     
  
@@ -46,9 +45,8 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+// Displays a Random Question from the trivia Array
     func displayQuestion() {
-        
         indexOfSelectedQuestion = questionProvider.randomIndexOfSelectedQuestion()
         let question = questionProvider.randomQuestion(indexOfSelectedQuestion: indexOfSelectedQuestion)
         answeredQuestionIndexesArray.append(indexOfSelectedQuestion)
@@ -58,21 +56,16 @@ class ViewController: UIViewController {
         NextQuestion.isHidden = true
         NextQuestion.isEnabled = false
         CorrectIncorrect.isHidden = true
-        
-       
-        
     }
-    
+
+// Displays the corresponding answer choices from the trivia Array
     func displayAnswer() {
-        
         let answerArrays = questionProvider.randomAnswer(indexOfSelectedQuestion: indexOfSelectedQuestion)
-        
         if answerArrays.count == 3 {
             FirstAnswer.setTitle(answerArrays[0], for: .normal);
             SecondAnswer.setTitle(answerArrays[1], for: .normal);
             ThirdAnswer.setTitle(answerArrays[2], for: .normal);
             FourthAnswer.isHidden = true  }
-            
             // for 3 answer questions
             else {
                 FourthAnswer.isHidden = false
@@ -82,42 +75,81 @@ class ViewController: UIViewController {
                 FourthAnswer.setTitle(answerArrays[3], for: .normal)
         }
     }
-    
+
+/// Checks whether the button that was pressed is the right answer by accessing the functions in the QuestionPicker file. Disables all buttons except the next question button and dims all answers but the correct one. Also calls the question struct to provide correct answer if answer is incorrect.
     @IBAction func checkAnswer(_ sender: UIButton) {
      correctAnswer = questionProvider.getCorrectAnswerByQuestion(in: indexOfSelectedQuestion)
-     
+     disableButtons()
+     dimAlpha()
+        
         if (sender === FirstAnswer && FirstAnswer.titleLabel?.text == correctAnswer) ||
         (sender === SecondAnswer && SecondAnswer.titleLabel?.text == correctAnswer) ||
         (sender === ThirdAnswer && ThirdAnswer.titleLabel?.text == correctAnswer) ||
-        (sender === FourthAnswer && FourthAnswer.titleLabel?.text == correctAnswer)
-        {
+        (sender === FourthAnswer && FourthAnswer.titleLabel?.text == correctAnswer) {
             let color = UIColor.green
             CorrectIncorrect.textColor = color
             CorrectIncorrect.text = "That's Correct!"
+            sender.isHighlighted = true
+            sender.alpha = 1.0
+            correctQuestions += 1
             // need sound to play
         }
         else {
             let color = UIColor.red
             CorrectIncorrect.textColor = color
-            CorrectIncorrect.text = "Sorry, That's Incorrect!"
+            CorrectIncorrect.text = "Sorry, That's Incorrect! The Correct Answer is \(questionProvider.getCorrectAnswerByQuestion(in: indexOfSelectedQuestion)) "
             // need sound to play
         }
-        disableButtons()
+        questionsAsked += 1
         questionProvider.trivia.remove(at: indexOfSelectedQuestion)
         CorrectIncorrect.isHidden = false
     
     }
     
+// Checks whether the game is over or if it should proceed to the next question
     @IBAction func NextQuestion(_ sender: UIButton) {
+        
+        if questionsAsked == questionsPerRound {
+            FirstAnswer.isHidden = true
+            SecondAnswer.isHidden = true
+            ThirdAnswer.isHidden = true
+            FourthAnswer.isHidden = true
+            QuestionDisplay.isHidden = true
+            NextQuestion.isHidden = true
+            PlayAgain.isEnabled = true
+            PlayAgain.isHidden = false
+            
+            CorrectIncorrect.textColor = UIColor.green
+            CorrectIncorrect.text = "You Answered \(correctQuestions) out of 4 Correctly!"
+        }
+        
+        else {
         enableButtons()
         displayQuestion()
         displayAnswer()
-        
+        resetAlpha()
+        }
+    }
+
+    func dimAlpha() {
+        FirstAnswer.alpha = 0.3
+        SecondAnswer.alpha = 0.3
+        ThirdAnswer.alpha = 0.3
+        FourthAnswer.alpha = 0.3
+    }
+    func newGame() {
+        resetAlpha()
+        displayAnswer()
+        displayQuestion()
+    }
+    func resetAlpha() {
+        FirstAnswer.alpha = 1.0
+        SecondAnswer.alpha = 1.0
+        ThirdAnswer.alpha = 1.0
+        FourthAnswer.alpha = 1.0
     }
     
-    
     func disableButtons() {
-        
         FirstAnswer.isEnabled = false
         SecondAnswer.isEnabled = false
         ThirdAnswer.isEnabled = false
@@ -126,55 +158,34 @@ class ViewController: UIViewController {
         SecondAnswer.isHighlighted = false
         ThirdAnswer.isHighlighted = false
         FourthAnswer.isHighlighted = false
-        
         NextQuestion.isHidden = false
         NextQuestion.isEnabled = true
     }
     
     func displayScore() {
-        // Hide the answer buttons
         FirstAnswer.isHidden = true
         SecondAnswer.isHidden = true
         ThirdAnswer.isHidden = true
         FourthAnswer.isHidden = true
-        
-        // Display play again button
         PlayAgain.isHidden = false
-        
-        
-        
     }
     
-    @IBAction func playAgain() {
-        // Show the answer buttons
+
+    @IBAction func playAgain(_ sender: UIButton) {
         FirstAnswer.isHidden = false
         SecondAnswer.isHidden = false
         ThirdAnswer.isHidden = false
         FourthAnswer.isHidden = false
         
+        answeredQuestionIndexesArray = []
         questionsAsked = 0
         correctQuestions = 0
- 
+        
+        newGame()
     }
+        
     
     func enableButtons() {
-        // The style constraints are setted for enabled buttons
-        let backgroundColorEnabledButton = UIColor(red:0.09, green:0.47, blue:0.58, alpha:1.0)
-        let textColorEnabledButton = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.0)
-        
-        FirstAnswer.backgroundColor = backgroundColorEnabledButton
-        FirstAnswer.setTitleColor(textColorEnabledButton, for: .normal)
-        
-        SecondAnswer.backgroundColor = backgroundColorEnabledButton
-        SecondAnswer.setTitleColor(textColorEnabledButton, for: .normal)
-        
-        ThirdAnswer.backgroundColor = backgroundColorEnabledButton
-        ThirdAnswer.setTitleColor(textColorEnabledButton, for: .normal)
-        
-        FourthAnswer.backgroundColor = backgroundColorEnabledButton
-        FourthAnswer.setTitleColor(textColorEnabledButton, for: .normal)
-        
-        // The buttons are enabled.
         FirstAnswer.isEnabled = true
         SecondAnswer.isEnabled = true
         ThirdAnswer.isEnabled = true

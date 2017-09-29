@@ -55,7 +55,6 @@ struct QuestionProvider {
     
 
     }
-//Temporary array for storing and deleting Questions to prevent repeats
-var triviaSuper: [Questions] = []
+
 
 
